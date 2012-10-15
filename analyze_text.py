@@ -31,17 +31,20 @@ def charCounts(in_file):
 def charCountsGram(in_file, nval = 3):
     gramCountMap = {}
     ngram_list = []
-    cur_gram = new Ngram()
+    cur_gram = Ngram()
     with codecs.open(in_file, encoding='utf-8') as f:
         for line in f:
             for x in range(0, len(line)):
-                if len(cur_gram.gram) >= nval - 1:
-                    if ngram_list.count(cur_gram) > 0:
-                        ngram_list[
+                #if len(cur_gram.gram) >= nval - 1:
+                if ngram_list.count(cur_gram) > 0:
+                    ngram_list[cur_gram] += 1
+                else:
+                    ngram_list[cur_gram] = 1
                 if line[x] == '\n':
                     pass
                 else:
-                    ngram.grams.append(line[x])
+                    cur_gram.gram.append(line[x])
+
 
     sorted_map = sorted(gramCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sorted_map
