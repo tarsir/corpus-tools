@@ -6,12 +6,37 @@ import operator
 import string
 import codecs
 
+# Globals!
+# Pretty self-explanatory, I think.  Might make a more detailed doc
+# file at some point, buuut too lazy.
+
 separators = [',', ' ', '.', '?', '!', ';', '\n']
 final_sep = ['.', '?', '!', '\n', ';']
+EMPTY_PIECE = "1_EMPTY"     # this is for empty spots, eg. <E, E, "Hello"> for
+                            # n-grams at the beginning of a phrase.
+
+# Class defs
+# Ngram: Abstraction of the mathematical n-gram
+# ex: gramEx = Ngram()
+#    gramEx.gram = [EMPTY_PIECE, "What", "are", "you", "doing?"]
+#    gramEx.count = 2
+#    here n = 5
+#    I'm not actually sure why I have this class def but whatever
 
 class Ngram:
     gram = []
     count = 0
+
+# Node: I don't know what this is for.
+
+class Node:
+    def __init__(self):
+        pass
+
+# Function defs
+# charCounts: Returns a count of every character in the source file
+# Not terribly useful at the moment since it doesn't do anything
+# sequentially...
 
 def charCounts(in_file):
     charCountMap = {}
@@ -20,34 +45,41 @@ def charCounts(in_file):
             for x in range(0, len(line)):
                 if line[x] == '\n':
                     pass
-                elif line[x] in charCountMap:
+                elif line[x] in charCountMap: #increment count of line[x]
                     charCountMap[unicode(line[x])] = charCountMap[unicode(line[x])] + 1
-                else:
+                else:  # special case where line[x] isn't already in the map
                     charCountMap[unicode(line[x])] = 1
 
     sorted_map = sorted(charCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sorted_map
 
+# charCountsGram: Returns a map of character-level n-grams in the source
+# file.  Doesn't actually work at the moment for a variety of reasons.
+
 def charCountsGram(in_file, nval = 3):
+    # I don't know what these variables do oh god why
     gramCountMap = {}
     ngram_list = []
     cur_gram = Ngram()
     with codecs.open(in_file, encoding='utf-8') as f:
         for line in f:
             for x in range(0, len(line)):
-                #if len(cur_gram.gram) >= nval - 1:
-                if ngram_list.count(cur_gram) > 0:
-                    ngram_list[cur_gram] += 1
+                if len(cur_gram.gram) >= nval - 1:
+                    cur_gram.gram.pop[0]
+                if ngram_list.count(cur_gram.gram) :
+                    gramCountMap[cur_gram] += 1
                 else:
-                    ngram_list[cur_gram] = 1
+                    gramCountMap[cur_gram] = 1
                 if line[x] == '\n':
-                    pass
+                    cur_gram = []
                 else:
-                    cur_gram.gram.append(line[x])
-
+                    cur_gram.append(line[x])
 
     sorted_map = sorted(gramCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sorted_map
+
+# wordCounts: Counts the words in the file.  Like charCounts, isn't
+# sequential, so not terribly useful...
 
 def wordCounts(in_file):
     wordCountMap = {}
@@ -70,6 +102,11 @@ def wordCounts(in_file):
                     a_word += char
     sorted_map = sorted(wordCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sorted_map
+
+# phraseCounts: Returns a list of word-level n-grams (where n = max_words), along with
+# their counts in in_file.  Closer to what we want, and also a giant mess of spaghetti.
+# There is, hidden in here, an algorithm, but it's easier to sketch it on a piece of
+# paper and scan it than it is to comment this behemoth.
 
 def phraseCounts(in_file, max_words = 3):
     phraseCountMap = {}
@@ -143,9 +180,7 @@ def phraseCounts(in_file, max_words = 3):
     sorted_map = sorted(phraseCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sorted_map
 
-class Node:
-    def __init__(self):
-        pass
+# the ubiquitous main()
 
 def main():
     parser = argparse.ArgumentParser(description='') #TODO: add desc
@@ -158,6 +193,7 @@ def main():
 #    wordCounts(args.inputF)
     for x in string.whitespace:
         separators.append(x)
+
     for inp_file in args.inputF:
         if args.mode == 'p' or args.mode == 'P':
             asdf = phraseCounts(inp_file)
@@ -172,8 +208,6 @@ def main():
         for obj in asdf:
             x = '\'{0}\':{1}'.format(obj[0].encode('utf-8'), obj[1])
             print x
-
-
 
 if __name__ == "__main__":
     main()
