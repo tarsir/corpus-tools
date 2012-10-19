@@ -12,7 +12,7 @@ import codecs
 
 separators = [',', ' ', '.', '?', '!', ';', '\n']
 final_sep = ['.', '?', '!', '\n', ';']
-EMPTY_PIECE = "1_EMPTY"     # this is for empty spots, eg. <E, E, "Hello"> for
+EMPTY_PIECE = "_"     # this is for empty spots, eg. <E, E, "Hello"> for
                             # n-grams at the beginning of a phrase.
 
 # Class defs
@@ -59,24 +59,34 @@ def charCounts(in_file):
 def charCountsGram(in_file, nval = 3):
     # I don't know what these variables do oh god why
     gramCountMap = {}
-    ngram_list = []
+    ngram = ""
+    ngram_list_pre = []
+    ngram_list_final = []
     cur_gram = Ngram()
     with codecs.open(in_file, encoding='utf-8') as f:
         for line in f:
             for x in range(0, len(line)):
-                if len(cur_gram.gram) >= nval - 1:
-                    cur_gram.gram.pop[0]
-                if ngram_list.count(cur_gram.gram) :
-                    gramCountMap[cur_gram] += 1
-                else:
-                    gramCountMap[cur_gram] = 1
                 if line[x] == '\n':
-                    cur_gram = []
+                    ngram = ""
                 else:
-                    cur_gram.append(line[x])
+                    ngram += line[x]
+                if len(ngram) > nval:
+#                    print 'Slicing from {0} to {1}'.format(ngram.encode, ngram[1:].encode)
+                    ngram = ngram[1:]
+                ngram_list_pre.append(ngram)
+    while len(ngram_list_pre) > 0:
+        grams = ngram_list_pre[0]
+        cur_gram.gram = grams
+#        print 'current: ',cur_gram.gram
+        while len(cur_gram.gram) < nval and len(cur_gram.gram) > 0:
+            cur_gram.gram = EMPTY_PIECE + cur_gram.gram
+        cur_gram.count = ngram_list_pre.count(grams)
+        ngram_list_final.append(cur_gram)
+        ngram_list_pre[:] = (value for value in ngram_list_pre if value != grams)
+        cur_gram = Ngram()
 
-    sorted_map = sorted(gramCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
-    return sorted_map
+    sorted_list = sorted(ngram_list_final, key=operator.attrgetter('count'))
+    return sorted_list
 
 # wordCounts: Counts the words in the file.  Like charCounts, isn't
 # sequential, so not terribly useful...
@@ -206,7 +216,10 @@ def main():
                 asdf = charCounts(inp_file)
         print 'IT BEGINS'
         for obj in asdf:
-            x = '\'{0}\':{1}'.format(obj[0].encode('utf-8'), obj[1])
+            if args.grams:
+                x = '\'{0}\':{1}'.format(''.join(obj.gram).encode('utf-8'), obj.count)
+            else:
+                x = '\'{0}\':{1}'.format(obj[0].encode('utf-8'), obj[1])
             print x
 
 if __name__ == "__main__":
