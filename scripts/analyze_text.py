@@ -27,6 +27,11 @@ EMPTY_PIECE = "_"     # this is for empty spots, eg. <E, E, "Hello"> for
 class Ngram:
     gram = []
     count = 0
+    def __init__(self, gramdude, gramcount):
+        self.gram = gramdude
+        self.count = gramcount
+    def __str__(self):
+        return ' '.join(self.gram)
 
 # Node: I don't know what this is for.
 
@@ -113,69 +118,8 @@ def wordCounts(in_file):
     sorted_map = sorted(wordCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sorted_map
 
-# phraseCounts: Returns a list of word-level n-grams (where n = max_words), along with
-# their counts in in_file.  Closer to what we want, and also a giant mess of spaghetti.
-# There is, hidden in here, an algorithm, but it's easier to sketch it on a piece of
-# paper and scan it than it is to comment this behemoth.
-
-def phraseCounts(in_file, max_words = 3):
-    phraseCountMap = {}
-    phrases = []
-    first_sep_index = 0
-    second_sep_index = 0
-    cur_word = 0
-    sentence_end_index = 0
-    first_sep_c_index = 0
-    with open(in_file) as f:
-        for line in f:
-            phrase = ""
-            sentence_end_index = 0
-            vals = range(0, len(line))
-            for c_index in vals:
-                char = line[c_index]
-                phrase += char
-                is_seps = True
-                if separators.count(char) > 0:
-                    if c_index+1 < len(line) and separators.count(line[c_index+1]):
-                        pass
-                    else:
-                        for x in phrase:
-                            if separators.count(x) == 0:
-                                is_seps = False
-                        if final_sep.count(char) > 0 and not is_seps:
-                            if not is_seps:
-                                phrases.append(phrase)
-                                sentence_end_index = c_index + 1
-                                phrase = ""
-                                cur_word = 0
-                        elif not is_seps:
-                            cur_word += 1
-                            if cur_word == 1:
-                                first_sep_index = c_index - (sentence_end_index)
-                                first_sep_c_index = first_sep_index
-                            elif cur_word == 2:
-                                second_sep_index = c_index - (sentence_end_index )
-                            elif cur_word == max_words:
-                                cur_word -= 1
-                                phrases.append(phrase)
-                                temp = unicode(phrase[:len(phrase) -1 ].strip())
-                                if temp in phraseCountMap:
-                                    phraseCountMap[temp] += 1
-                                else:
-                                    phraseCountMap[temp] = 1
-                                phrase = phrase[first_sep_index:]
-                                first_sep_index, second_sep_index = second_sep_index - first_sep_index, c_index - first_sep_c_index + 1 - sentence_end_index
-                                first_sep_c_index += first_sep_index
-                            if final_sep.count(char) > 0:
-                                phrases.append(phrase)
-                            elif is_seps:
-                                phrase = ""
-                                is_seps = True
-    sorted_map = sorted(phraseCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
-    return sorted_map
-
 # betterPhraseCounts: I think this makes word-level n-grams, but it's a lot
-# simpler code-wise than phraseCounts.  Excellent!
+# simpler code-wise than phraseCounts, which is now deleted.  Excellent!
 
 def betterPhraseCounts(in_file, max_words = 3):
     phraseCountMap = {}
@@ -223,7 +167,7 @@ def sumCounts(inp_list):
 def main():
     parser = argparse.ArgumentParser(description='') #TODO: add desc
     parser.add_argument('-i', '--inputF', nargs='+', required=True, help='The source files to be analyzed')
-    parser.add_argument('-m', '--mode', nargs='?', default='p', help='The mode by which to analyze the input files')
+    parser.add_argument('-m', '--mode', nargs='?', default='p', help='The mode by which to analyze the input files(eg. pt|w|c)')
     parser.add_argument('-g', '--grams', nargs='?', default=-1, help='If greater than 1, will construct N-grams of length given')
     parser.add_argument('-c', '--count', nargs='?', const=False, help='If specified, will also output counts of n-gram quantities')
     args = parser.parse_args()
