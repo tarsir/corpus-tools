@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from splitBySeps import divideBySeps as splitter, combineSeps as combiner
+from split_by_seps import divideBySeps as splitter, combineSeps as combiner
 import argparse
 import re
 import operator
@@ -27,6 +27,9 @@ EMPTY_PIECE = "_"     # this is for empty spots, eg. <E, E, "Hello"> for
 class Ngram:
     gram = []
     count = 0
+    def __init__ (self):
+        self.gram = []
+        self.count = 0
     def __init__(self, gramdude, gramcount):
         self.gram = gramdude
         self.count = gramcount
@@ -141,9 +144,9 @@ def betterPhraseCounts(in_file, max_words = 3):
     sorted_map = sorted(phraseCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
     realGramList = []
     for gram_, count_ in sorted_map:
-        newGram = Ngram()
-        newGram.gram = gram_.strip()
-        newGram.count = count_
+        newGram = Ngram(gram_.strip(), count_)
+        #newGram.gram = gram_.strip()
+        #newGram.count = count_
         realGramList.append(newGram)
     return realGramList
 
@@ -179,9 +182,9 @@ def main():
         separators.append(x)
 
     for inp_file in args.inputF:
-        if args.mode == 'p' or args.mode == 'P':
-            asdf = phraseCounts(inp_file)
-        elif args.mode.lower() == 'pt':
+        #if args.mode == 'p' or args.mode == 'P':
+         #   asdf = phraseCounts(inp_file)
+        if args.mode.lower() in ['pt', 'p']:
             asdf = betterPhraseCounts(inp_file)
         elif args.mode == 'w' or args.mode == 'W':
             asdf = wordCounts(inp_file)
