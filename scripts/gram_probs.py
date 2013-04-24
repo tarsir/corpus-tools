@@ -8,6 +8,20 @@
 import argparse
 from analyze_text import Ngram
 
+def calcTotalOfEnd(possibilities):
+    countSum = 0
+    for x in possibilities:
+        countSum += x[1]
+    return countSum
+
+def generateWords(count_map, numWords):
+    count = 0
+    curString = ""
+    while count <= numWords:
+        if curString in count_map.keys():
+            denom = calcTotalOfEnd(count_map[curString])
+
+
 def addIntoCountMap(count_map, ngram):
     '''
     count_map: a {str:[(str,int)]} map of (n-1)-grams
@@ -45,7 +59,7 @@ def main():
         valString = ''
         for x in val:
             valString += x[0] + ',' + x[1] + ';'
-        print '{:<35}\t;{}'.format(key.strip('\''), valString)
+        print '{};{}'.format(key.strip('\''), valString)
 
 if __name__=="__main__":
     main()

@@ -3,6 +3,7 @@
 test_string = "Hello, what? How;never! egads you are here"
 
 separators = [',', ' ', '.', '?', '!', ';', '\n']
+start = "<START_OF_SENT>"
 
 def divideBySeps(inp_string = test_string, sep_list = separators):
     piece_list = []

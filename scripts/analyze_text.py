@@ -176,6 +176,7 @@ def main():
     args = parser.parse_args()
 
     args.count = bool(args.count)
+    args.grams = int(args.grams)
 
     asdf = ()
     for x in string.whitespace:
@@ -185,7 +186,7 @@ def main():
         #if args.mode == 'p' or args.mode == 'P':
          #   asdf = phraseCounts(inp_file)
         if args.mode.lower() in ['pt', 'p']:
-            asdf = betterPhraseCounts(inp_file)
+            asdf = betterPhraseCounts(inp_file, args.grams)
         elif args.mode == 'w' or args.mode == 'W':
             asdf = wordCounts(inp_file)
         elif args.mode == 'c' or args.mode == 'C':
@@ -197,7 +198,7 @@ def main():
             if (args.grams > 1 or args.grams == -1):
                 x = '\'{0}\':{1}'.format(''.join(obj.gram).encode('utf-8'), obj.count)
             else:
-                x = '\'{0}\':{1}'.format(obj[0].encode('utf-8'), obj[1])
+                x = '\'{0}\':{1}'.format(obj.gram.encode('utf-8'), obj.count)
             print x
         if args.count and (args.grams > 1 or args.grams == -1):
             countDict = sumCounts(asdf)
