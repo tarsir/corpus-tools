@@ -18,6 +18,8 @@ def getNextWord(listOfStuff):
     newTuples = []
     for x in listOfStuff:
         parts = x.split(',')
+        if len(parts) <= 1:
+            break
         bigTuples.append((parts[0], parts[1]))
         allCounts += int(parts[1])
     for x in bigTuples:
@@ -30,16 +32,24 @@ def getNextWord(listOfStuff):
         if valuething < newSum:
             return x[0]
     print "no match?"
-    
+    return ""
 
 def generateWords(numWords):
     count = 0
-    currentStr = ""
+    currentStr = []
     while count <= numWords:
-        if currentStr in countMap:
-            currentStr += getNextWord(countMap[currentStr])
+        if ' '.join(currentStr) in countMap:
+            len1 = len(currentStr)
+            currentStr.append(getNextWord(countMap[' '.join(currentStr)]))
+            while currentStr[-1] == '':
+                currentStr[-1] = getNextWord(countMap[currentStr[-2]])
             count += 1
-            continue
+        else:
+            count2 = -1
+            while currentStr[count2] not in countMap:
+                count2 -= 1
+            currentStr.append(getNextWord(countMap[currentStr[count2]]))
+            count += 1
     return currentStr
 
 def main():
