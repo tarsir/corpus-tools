@@ -28,15 +28,27 @@ def getNextWord(listOfStuff):
     for x in newTuples:
         newSum += x[1]
         if valuething < newSum:
-
-
-
-
+            return x[0]
+    print "no match?"
+    
 
 def generateWords(numWords):
     count = 0
     currentStr = ""
     while count <= numWords:
         if currentStr in countMap:
-            getNextWord(countMap[currentStr])
+            currentStr += getNextWord(countMap[currentStr])
+            count += 1
+            continue
+    return currentStr
 
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--inputf', nargs='?', required=True)
+    args = parser.parse_args()
+
+    buildCountMap(args.inputf)
+    print generateWords(10)
+
+if __name__=="__main__":
+    main()
