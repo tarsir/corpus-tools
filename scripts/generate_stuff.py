@@ -38,11 +38,16 @@ def getNextWord(listOfStuff):
     allCounts = 0
     newTuples = []
     for x in listOfStuff:
-        parts = x.split(',')
-        if len(parts) <= 1:
+        x = x.strip()
+        comindex = x.rfind(',')
+        parts = [x[:comindex], x[comindex+1:]]
+        if len(parts) <= 1 or ''.join(parts).strip() == '':
             break
         bigTuples.append((parts[0], parts[1]))
-        allCounts += int(parts[1])
+        try:
+            allCounts += int(parts[1])
+        except ValueError:
+            print parts
     for x in bigTuples:
         newTuple = (x[0], float(x[1])/float(allCounts))
         newTuples.append(newTuple)
