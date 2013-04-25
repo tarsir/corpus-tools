@@ -95,8 +95,8 @@ def generateWordsSyllableCount(numsyllables):
                 if curSylls+newSylls > numsyllables+5:
                     continue
                 candidates.append(x)
-            if len(candidates) == 0:
-                candidates.append(random.choice(fillers), 1)
+            if len(candidates) == 0 or curSylls - numsyllables in range(-4, 4):
+                candidates.append((random.choice(fillers), 1))
             currentStr.append(getNextWord(candidates))
             curSylls += newSylls
     return currentStr
