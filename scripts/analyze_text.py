@@ -133,7 +133,10 @@ def betterPhraseCounts(in_file, max_words = 3):
             end_pos = 2 * max_words - 1
             begin_pos = 0
             while begin_pos < len(parts):
-                this_gram = unicode("".join(parts[begin_pos:end_pos]))
+                try:
+                    this_gram = unicode("".join(parts[begin_pos:end_pos]))
+                except UnicodeDecodeError:
+                    pass
                 end_pos += 2
                 begin_pos += 2
                 if this_gram in phraseCountMap:
@@ -163,7 +166,6 @@ def sumCounts(inp_list):
         else:
             countMap[gram.count] = 1
     return countMap
-
 
 # the ubiquitous main()
 
