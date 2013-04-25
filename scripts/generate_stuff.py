@@ -98,7 +98,6 @@ def generateWordsSyllableCount(numsyllables):
             if len(candidates) == 0:
                 candidates.append(random.choice(fillers), 1)
             currentStr.append(getNextWord(candidates))
-            print currentStr
             curSylls += newSylls
     return currentStr
 
