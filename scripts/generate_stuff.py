@@ -17,7 +17,7 @@ def averagePhonesPerLetter():
         phoneStats[endofword].append(len(phones))
     for wordLen, phonecount in phoneStats.iteritems():
         phoneStats[wordLen] = reduce(lambda x,y: x + y, phonecount) / len(phonecount)
-        print "Defaulting {0} letter words to {1} syllables".format(wordLen, phoneStats[wordLen])
+        # print "Defaulting {0} letter words to {1} syllables".format(wordLen, phoneStats[wordLen])
 
 
 def buildPhoneMap(fileName):
@@ -34,6 +34,8 @@ def buildCountMap(fileHandle):
             countMap[parts[0]] = parts[1:]
 
 def getNextWord(listOfStuff):
+    """
+    """
     bigTuples = []
     allCounts = 0
     newTuples = []
@@ -43,11 +45,12 @@ def getNextWord(listOfStuff):
         parts = [x[:comindex], x[comindex+1:]]
         if len(parts) <= 1 or ''.join(parts).strip() == '':
             break
-        bigTuples.append((parts[0], parts[1]))
         try:
             allCounts += int(parts[1])
+            bigTuples.append((parts[0], parts[1]))
         except ValueError:
-            print parts
+            pass
+            # print parts
     for x in bigTuples:
         newTuple = (x[0], float(x[1])/float(allCounts))
         newTuples.append(newTuple)
@@ -57,7 +60,7 @@ def getNextWord(listOfStuff):
         newSum += x[1]
         if valuething < newSum:
             return x[0]
-    print "no match?"
+    # print "no match?"
     return ""
 
 def generateWords(numWords):
@@ -70,10 +73,9 @@ def generateWords(numWords):
         while ' '.join(window) not in countMap:
             windowStart += 1
             window = currentStr[windowStart:]
-        len1 = len(window)
         currentStr.append(getNextWord(countMap[' '.join(window)]))
         count += 1
-    return currentStr
+    return ' '.join(currentStr)
 
 def generateWordsSyllableCount(numsyllables):
     curSylls = 0
@@ -112,13 +114,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-cm', '--countmap', nargs='?', required=True)
     parser.add_argument('-pm', '--phrasemap', nargs='?', required=True)
+    parser.add_argument('-n', '--count', nargs='?', default=5)
     args = parser.parse_args()
 
     buildCountMap(args.countmap)
     buildPhoneMap(args.phrasemap)
     averagePhonesPerLetter()
-    print generateWords(10)
-    print generateWordsSyllableCount(40)
+    iterations = int(args.count)
+    for i in range(0, iterations):
+        print generateWords(20)
+    # print generateWordsSyllableCount(40)
 
 if __name__=="__main__":
     main()

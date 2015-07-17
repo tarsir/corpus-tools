@@ -2,7 +2,6 @@
 
 from split_by_seps import divideBySeps as splitter, combineSeps as combiner
 import argparse
-import re
 import operator
 import string
 import codecs
@@ -148,17 +147,17 @@ def betterPhraseCounts(in_file, max_words = 3):
     realGramList = []
     for gram_, count_ in sorted_map:
         newGram = Ngram(gram_.strip(), count_)
-        #newGram.gram = gram_.strip()
-        #newGram.count = count_
         realGramList.append(newGram)
     return realGramList
 
-# sumCounts: Returns a map(int, int) with the number of distinct
-# n-grams with each count.  Will be useful for the probability
-# later, but would just like to gather stats for funsies at the
-# moment.
 
 def sumCounts(inp_list):
+    """
+    sumCounts: Return a map(int, int) with the number of distinct
+    n-grams with each count.  Will be useful for the probability
+    later, but would just like to gather stats for funsies at the
+    moment.
+    """
     countMap = {}
     for gram in inp_list:
         if gram.count in countMap:
@@ -179,19 +178,19 @@ def main():
 
     args.count = bool(args.count)
     args.grams = int(args.grams)
+    args.mode = args.mode.lower()
 
     asdf = ()
     for x in string.whitespace:
         separators.append(x)
 
+
     for inp_file in args.inputF:
-        #if args.mode == 'p' or args.mode == 'P':
-         #   asdf = phraseCounts(inp_file)
-        if args.mode.lower() in ['pt', 'p']:
+        if args.mode in ['pt', 'p']:
             asdf = betterPhraseCounts(inp_file, args.grams)
-        elif args.mode == 'w' or args.mode == 'W':
+        elif args.mode == 'w':
             asdf = wordCounts(inp_file)
-        elif args.mode == 'c' or args.mode == 'C':
+        elif args.mode == 'c':
             if args.grams > 1:
                 asdf = charCountsGram(inp_file, args.grams)
             else:

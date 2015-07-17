@@ -5,14 +5,15 @@ test_string = "Hello, what? How;never! egads you are here"
 separators = [',', ' ', '.', '?', '!', ';', '\n']
 start = "<START_OF_SENT>"
 
-def divideBySeps(inp_string = test_string, sep_list = separators):
+def divideBySeps(inp_string = test_string, sep_list = separators, include_seps = False):
     piece_list = []
     cur_piece = ""
     for character in inp_string:
         if character in sep_list:
             if len(cur_piece) > 0:
                 piece_list.append(cur_piece)
-            piece_list.append(character)
+            if include_seps:
+                piece_list.append(character)
             cur_piece = ""
         else:
             cur_piece += character
