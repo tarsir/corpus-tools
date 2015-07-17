@@ -12,48 +12,52 @@ import codecs
 
 separators = [',', ' ', '.', '?', '!', ';', '\n']
 final_sep = ['.', '?', '!', '\n', ';']
-EMPTY_PIECE = "_"     # this is for empty spots, eg. <E, E, "Hello"> for
-                      # n-grams at the beginning of a phrase.
+EMPTY_PIECE = "_"
+# this is for empty spots, eg. <E, E, "Hello"> for
+# n-grams at the beginning of a phrase.
 
 # Class defs
-# Ngram: Abstraction of the mathematical n-gram
-# ex: gramEx = Ngram()
-#    gramEx.gram = [EMPTY_PIECE, "What", "are", "you", "doing?"]
-#    gramEx.count = 2
-#    here n = 5
-#    I'm not actually sure why I have this class def but whatever
+
 
 class Ngram:
-    gram = []
-    count = 0
-    def __init__ (self):
-        self.gram = []
-        self.count = 0
-    def __init__(self, gramdude, gramcount):
-        self.gram = gramdude
-        self.count = gramcount
+    """
+    Ngram: Abstraction of the mathematical n-gram
+    ex: gramEx = Ngram()
+    gramEx.gram = [EMPTY_PIECE, "What", "are", "you", "doing?"]
+    gramEx.count = 2
+    here n = 5
+    """
+    def __init__(self, gram_=[], count_=0):
+        self.gram = gram_
+        self.count = count_
+
+    @property
+    def gram(self):
+        return self.gram
+
+    @property
+    def count(self):
+        return self.count
+
     def __str__(self):
         return ' '.join(self.gram)
 
-# Node: I don't know what this is for.
-
-class Node:
-    def __init__(self):
-        pass
-
 # Function defs
-# charCounts: Returns a count of every character in the source file
-# Not terribly useful at the moment since it doesn't do anything
-# sequentially...
+
 
 def charCounts(in_file):
+    """
+    charCounts: Returns a count of every character in the source file
+    Not terribly useful at the moment since it doesn't do anything
+    sequentially...
+    """
     charCountMap = {}
     with codecs.open(in_file, encoding='utf-8') as f:
         for line in f:
             for x in range(0, len(line)):
                 if line[x] == '\n':
                     pass
-                elif line[x] in charCountMap: #increment count of line[x]
+                elif line[x] in charCountMap:  #increment count of line[x]
                     charCountMap[unicode(line[x])] = charCountMap[unicode(line[x])] + 1
                 else:  # special case where line[x] isn't already in the map
                     charCountMap[unicode(line[x])] = 1
@@ -64,9 +68,7 @@ def charCounts(in_file):
 # charCountsGram: Returns a map of character-level n-grams in the source
 # file.  Doesn't actually work at the moment for a variety of reasons.
 
-def charCountsGram(in_file, nval = 3):
-    # I don't know what these variables do oh god why
-    gramCountMap = {}
+def charCountsGram(in_file, nval=3):
     ngram = ""
     ngram_list_pre = []
     ngram_list_final = []
@@ -80,7 +82,7 @@ def charCountsGram(in_file, nval = 3):
                     ngram += line[x]
                 if len(ngram) > nval:
                     ngram = ngram[1:]
-                ngram_list_pre.append(ngram)
+                    ngram_list_pre.append(ngram)
     while len(ngram_list_pre) > 0:
         grams = ngram_list_pre[0]
         cur_gram.gram = grams
@@ -95,10 +97,12 @@ def charCountsGram(in_file, nval = 3):
     sorted_list = sorted(ngram_list_final, key=operator.attrgetter('count'))
     return sorted_list
 
-# wordCounts: Counts the words in the file.  Like charCounts, isn't
-# sequential, so not terribly useful...
 
 def wordCounts(in_file):
+    """
+    wordCounts: Counts the words in the file.  Like charCounts, isn't
+    sequential, so not terribly useful...
+    """
     wordCountMap = {}
     words = []
     with open(in_file) as f:
@@ -112,18 +116,24 @@ def wordCounts(in_file):
                     if a_word in wordCountMap:
                         wordCountMap[a_word] = wordCountMap[a_word] + 1
                     else:
-                         wordCountMap[a_word] = 1
-                    words.append(char)
-                    a_word = ""
+                        wordCountMap[a_word] = 1
+                        words.append(char)
+                        a_word = ""
                 else:
                     a_word += char
-    sorted_map = sorted(wordCountMap.iteritems(), key=operator.itemgetter(1), reverse=True)
-    return sorted_map
+                    sorted_map = sorted(
+                        wordCountMap.iteritems(),
+                        key=operator.itemgetter(1),
+                        reverse=True
+                    )
+                    return sorted_map
 
-# betterPhraseCounts: I think this makes word-level n-grams, but it's a lot
-# simpler code-wise than phraseCounts, which is now deleted.  Excellent!
 
 def betterPhraseCounts(in_file, max_words = 3):
+    """
+    betterPhraseCounts: I think this makes word-level n-grams, but it's a lot
+    simpler code-wise than phraseCounts, which is now deleted.  Excellent!
+    """
     phraseCountMap = {}
     this_gram = ""
     with open(in_file) as f:
@@ -164,9 +174,10 @@ def sumCounts(inp_list):
             countMap[gram.count] += 1
         else:
             countMap[gram.count] = 1
-    return countMap
+            return countMap
 
 # the ubiquitous main()
+
 
 def main():
     parser = argparse.ArgumentParser(description='') #TODO: add desc
@@ -183,7 +194,6 @@ def main():
     asdf = ()
     for x in string.whitespace:
         separators.append(x)
-
 
     for inp_file in args.inputF:
         if args.mode in ['pt', 'p']:

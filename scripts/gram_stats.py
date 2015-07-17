@@ -19,5 +19,3 @@ def parseGram(gramStr):
     print gramStr
     print radGram.gram
     return radGram
-
-parseGram("'hello, this is a dog':5")
